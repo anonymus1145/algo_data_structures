@@ -226,45 +226,23 @@ function merge_sort_link_list(first_node: MyNode<number>) {
   // Stores the head of first half and second half
   const heads: MyNode<number>[] = split_linked_list(first_node, middle);
 
+  if (heads.length <= 1) {
+    return heads[0];
+  }
+
   const left = merge_sort_link_list(heads[0]);
   const right = merge_sort_link_list(heads[1]);
 
-  if (!left || !right) {
-    return;
-  }
-
   // Merge function
-  const merge = (left: number[], right: number[]) => {
-    const new_list: number[] = [];
-    let i = 0;
-    let j = 0;
+  const merge_link_list = (left: MyNode<number>, right: MyNode<number>) => {
+    const new_head: MyNode<number> = left;
 
-    while (i < left.length && j < right.length) {
-      if (left[i] < right[j]) {
-        new_list.push(left[i]);
-        i++;
-      } else {
-        new_list.push(right[j]);
-        j++;
-      }
-    }
-
-    while (i < left.length) {
-      new_list.push(left[i]);
-      i++;
-    }
-
-    while (j < right.length) {
-      new_list.push(right[j]);
-      j++;
-    }
-
-    return new_list;
+    return new_head;
   }
 
-  const new_list = merge(left, right);
+  const new_head = merge_link_list(left!, right!);
 
-  return new_list;
+  return new_head;
 }
 
 // merge_sort_link_list(node6);
