@@ -201,46 +201,42 @@ function merge_sort_link_list(first_node: MyNode<number>) {
   // Split the link_list in 2
   const middle = nodes / 2;
 
-  // As we only have the first node of the list and the total number of nodes we need to go and make tail true at half and head true at half+1
-  const split_linked_list = (head: MyNode<number>, middle: number): MyNode<number>[] => {
-    let count = 1;
-    let current: MyNode<number> | undefined = head;
-    while (current && count < middle) {
-      current = current.next_node;
-      count++;
-    }
-
-    if (current && current.next_node) {
-      current.tail = true;
-      current.next_node.head = true;
-
-      const second_head = current.next_node;
-      current.next_node = undefined;
-
-      return [head, second_head];
-    }
-
-    return [head];
-  }
-
   // Stores the head of first half and second half
   const heads: MyNode<number>[] = split_linked_list(first_node, middle);
-
-  if (heads.length <= 1) {
-    return heads[0];
-  }
 
   const left = merge_sort_link_list(heads[0]);
   const right = merge_sort_link_list(heads[1]);
 
-  // Merge function
-  const merge_link_list = (left: MyNode<number>, right: MyNode<number>) => {
-    const new_head: MyNode<number> = left;
+  const new_head = merge_link_list(left!, right!);
 
-    return new_head;
+  return new_head;
+}
+
+// As we only have the first node of the list and the total number of nodes we need to go and make tail true at half and head true at half+1
+const split_linked_list = (head: MyNode<number>, middle: number): MyNode<number>[] => {
+  let count = 1;
+  let current: MyNode<number> | undefined = head;
+  while (current && count < middle) {
+    current = current.next_node;
+    count++;
   }
 
-  const new_head = merge_link_list(left!, right!);
+  if (current && current.next_node) {
+    current.tail = true;
+    current.next_node.head = true;
+
+    const second_head = current.next_node;
+    current.next_node = undefined;
+
+    return [head, second_head];
+  }
+
+  return [head];
+}
+
+// Merge function
+const merge_link_list = (left: MyNode<number>, right: MyNode<number>) => {
+  const new_head: MyNode<number> = left;
 
   return new_head;
 }
