@@ -202,18 +202,32 @@ function merge_sort_link_list(first_node: MyNode<number>) {
   const middle = nodes / 2;
 
   // As we only have the first node of the list and the total number of nodes we need to go and make tail true at half and head true at half+1
-  const split_linked_list = (value1: MyNode<number>, _value2: number | MyNode<number>): MyNode<number> => {
+  const split_linked_list = (head: MyNode<number>, middle: number): MyNode<number>[] => {
+    let count = 1;
+    let current: MyNode<number> | undefined = head;
+    while (current && count < middle) {
+      current = current.next_node;
+      count++;
+    }
 
-    return value1;
+    if (current && current.next_node) {
+      current.tail = true;
+      current.next_node.head = true;
 
+      const second_head = current.next_node;
+      current.next_node = undefined;
+
+      return [head, second_head];
+    }
+
+    return [head];
   }
-  // Stores the head of first half
-  const firstHalf: MyNode<number> = split_linked_list(first_node, middle);
-  // Stores the head of second half
-  const secondHalf: MyNode<number> = split_linked_list(first_node, middle);
 
-  const left = merge_sort_link_list(firstHalf);
-  const right = merge_sort_link_list(secondHalf);
+  // Stores the head of first half and second half
+  const heads: MyNode<number>[] = split_linked_list(first_node, middle);
+
+  const left = merge_sort_link_list(heads[0]);
+  const right = merge_sort_link_list(heads[1]);
 
   if (!left || !right) {
     return;
