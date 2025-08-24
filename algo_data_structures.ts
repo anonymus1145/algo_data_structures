@@ -194,51 +194,63 @@ console.log(sorted_array);
 
 // Merge sort link_list
 function merge_sort_link_list(first_node: MyNode<number>) {
-  const nodes = nodes_count(first_node, 0);
-  if (nodes <= 1 && !first_node.head) {
-    return;
-  }
-  // Split the link_list in 2
-  const middle = nodes / 2;
+  // Base case: if the list is empty or has only one node,
+  // it's already sorted
+  if (!first_node || !first_node.next_node)
+    return first_node;
 
-  // Stores the head of first half and second half
-  const heads: MyNode<number>[] = split_linked_list(first_node, middle);
+  // Split the list into two halves
+  let second = split_linked_list(first_node);
 
-  const left = merge_sort_link_list(heads[0]);
-  const right = merge_sort_link_list(heads[1]);
+  // Recursively sort each half
+  first_node = merge_sort_link_list(first_node);
+  second = merge_sort_link_list(second!);
 
-  const new_head = merge_link_list(left!, right!);
-
-  return new_head;
+  // Merge the two sorted halves
+  const merge_list = merge_link_list(first_node, second!);
+  return merge_list;
 }
 
 // As we only have the first node of the list and the total number of nodes we need to go and make tail true at half and head true at half+1
-const split_linked_list = (head: MyNode<number>, middle: number): MyNode<number>[] => {
-  let count = 1;
-  let current: MyNode<number> | undefined = head;
-  while (current && count < middle) {
-    current = current.next_node;
-    count++;
+const split_linked_list = (head: MyNode<number>) => {
+  let fast = head;
+  let slow = head;
+
+  // Move fast pointer two steps and slow pointer
+  // one step until fast reaches the end
+  while (fast && fast.next_node) {
+    fast = fast.next_node.next_node!;
+    if (fast) {
+      slow = slow.next_node!;
+    }
   }
 
-  if (current && current.next_node) {
-    current.tail = true;
-    current.next_node.head = true;
-
-    const second_head = current.next_node;
-    current.next_node = undefined;
-
-    return [head, second_head];
-  }
-
-  return [head];
+  // Split the list into two halves
+  let second = slow.next_node;
+  slow.next_node = null!;
+  return second;
 }
 
 // Merge function
-const merge_link_list = (left: MyNode<number>, right: MyNode<number>) => {
-  const new_head: MyNode<number> = left;
+const merge_link_list = (first: MyNode<number>, second: MyNode<number>) => {
+  // If either list is empty, return the other list
+  if (!first)
+    return second;
+  if (!second)
+    return first;
 
-  return new_head;
+  // Pick the smaller value between first and second nodes
+  if (first.data < second.data) {
+    first.next_node = merge_link_list(first.next_node!, second);
+    return first;
+  }
+  else {
+    second.next_node = merge_link_list(first, second.next_node!);
+    return second;
+  }
 }
 
-// merge_sort_link_list(node6);
+const first_node = merge_sort_link_list(node6);
+const sorted_nodes = nodes_count(first_node, 0);
+console.log('Sorted nodes: ', sorted_nodes);
+
