@@ -41,7 +41,7 @@ node2.next_node = node3;
 //console.log(node1.next_node?.data); // prints 20
 
 // Check if the list is empty -> List traversal
-function nodes_count(node: MyNode<number>, count: number): number {
+function nodes_count(node: MyNode<number>, count: number, setHeaderTail?: boolean): number {
   // Recursive way
   /*
   if (node.head) {
@@ -57,11 +57,17 @@ function nodes_count(node: MyNode<number>, count: number): number {
   return count;
   */
 
+  if (setHeaderTail) {
+    node.head = true;
+  }
+
   // Iterative way
   while (node) {
     count++;
-    console.log(`Node${count} -> data:`, node.data);
+    console.log(`Node${count} -> data:`, node.data, `Head: `, node.head, `Tail: `, node.tail);
     if (node.next_node) {
+      node.next_node.head = false;
+      node.next_node.tail = false;
       node = node.next_node;
     } else {
       break;
@@ -251,6 +257,6 @@ const merge_link_list = (first: MyNode<number>, second: MyNode<number>) => {
 }
 
 const first_node = merge_sort_link_list(node6);
-const sorted_nodes = nodes_count(first_node, 0);
+const sorted_nodes = nodes_count(first_node, 0, true);
 console.log('Sorted nodes: ', sorted_nodes);
 
