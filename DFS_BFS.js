@@ -312,3 +312,37 @@ var levelOrder = function (root) {
     }
     return levels;
 };
+
+
+// Remove node at some level BFS
+
+var deleteNode = function(root, key) {
+    if (!root) return null;
+
+    if (key < root.val) {
+        root.left = deleteNode(root.left, key);
+    } else if (key > root.val) {
+        root.right = deleteNode(root.right, key);
+    } else {
+        // Node found
+        if (!root.left) return root.right;
+        if (!root.right) return root.left;
+
+        // Node with two children: Get the in-order successor (min in right subtree)
+        let minNode = getMin(root.right);
+        root.val = minNode.val;
+
+        // Delete the in-order successor
+        root.right = deleteNode(root.right, minNode.val);
+    }
+
+    return root;
+};
+
+// Helper: Find min node in a subtree
+function getMin(node) {
+    while (node.left) {
+        node = node.left;
+    }
+    return node;
+}
