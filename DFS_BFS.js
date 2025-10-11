@@ -346,3 +346,79 @@ function getMin(node) {
     }
     return node;
 }
+
+
+// Max width of leaf
+
+var widthOfBinaryTree = function(root) {
+    if (!root) return 0;
+
+    let maxWidth = 0;
+    // Queue holds [node, index]
+    let queue = [[root, 0]];
+
+    while (queue.length > 0) {
+        let levelSize = queue.length;
+        let first = queue[0][1];   // leftmost index
+        let last = queue[levelSize - 1][1]; // rightmost index
+        maxWidth = Math.max(maxWidth, last - first + 1);
+
+        for (let i = 0; i < levelSize; i++) {
+            let [node, index] = queue.shift();
+
+            // Normalize index to avoid large numbers
+            index -= first;
+
+            if (node.left) queue.push([node.left, index * 2]);
+            if (node.right) queue.push([node.right, index * 2 + 1]);
+        }
+    }
+    return maxWidth;
+};
+
+
+// BFS Rooting oranges
+
+var orangesRotting = function(grid) {
+    if (!grid || grid.length === 0) return -1;
+
+    const rows = grid.length;
+    const cols = grid[0].length;
+    const directions = [[-1,0], [1,0], [0,-1], [0,1]];
+    let queue = [];
+    let fresh = 0;
+
+    // collect rotten oranges and count fresh ones
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            if (grid[r][c] === 2) queue.push([r, c]);
+            if (grid[r][c] === 1) fresh++;
+        }
+    }
+
+    let minutes = 0;
+
+    while (queue.length && fresh > 0) {
+        let size = queue.length;
+        for (let i = 0; i < size; i++) {
+            let [row, col] = queue.shift();
+
+            for (let [dr, dc] of directions) {
+                let nr = row + dr, nc = col + dc;
+                if (
+                    nr >= 0 && nr < rows &&
+                    nc >= 0 && nc < cols &&
+                    grid[nr][nc] === 1
+                ) {
+                    grid[nr][nc] = 2; // rot it
+                    fresh--;
+                    queue.push([nr, nc]);
+                }
+            }
+        }
+        minutes++;
+    }
+
+    return fresh === 0 ? minutes : -1;
+};
+
