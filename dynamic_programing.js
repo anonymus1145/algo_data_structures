@@ -79,3 +79,24 @@ var maxSumDivThree = function (nums) {
   }
   return dp[0];
 };
+
+
+var longestArithSeqLength = function (nums) {
+  const n = nums.length;
+  let longest = 2;
+
+  if (n <= 2) return n;
+
+  const dp = Array.from({ length: n }, () => new Map());
+
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      const diff = nums[i] - nums[j];
+      const prev = dp[j].get(diff) || 1;
+      const curr = prev + 1;
+      dp[i].set(diff, curr);
+      longest = Math.max(longest, curr);
+    }
+  }
+  return longest;
+};
