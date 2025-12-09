@@ -100,3 +100,59 @@ var longestArithSeqLength = function (nums) {
   }
   return longest;
 };
+
+//Maximum Non Negative Product in a Matrix
+
+var maxProductPath = function (grid) {
+  const m = grid.length;
+  const n = grid[0].length;
+  const MOD = 1000000007;
+
+  // dp[i][j][0] → max product to reach (i,j)
+  // dp[i][j][1] → min product to reach (i,j)
+  const dp = Array.from({ length: m }, () =>
+    Array.from({ length: n }, () => [0, 0])
+  );
+
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+
+      // Starting cell: both max and min are the cell value
+      if (i === 0 && j === 0) {
+        dp[i][j][0] = grid[i][j];
+        dp[i][j][1] = grid[i][j];
+        continue;
+      }
+
+      const vals = [];
+
+      // From the cell above
+      if (i > 0) {
+        // Multiply current value with max and min from top
+        vals.push(grid[i][j] * dp[i - 1][j][0]);
+        vals.push(grid[i][j] * dp[i - 1][j][1]);
+      }
+
+      // From the cell on the left
+      if (j > 0) {
+        // Multiply current value with max and min from left
+        vals.push(grid[i][j] * dp[i][j - 1][0]);
+        vals.push(grid[i][j] * dp[i][j - 1][1]);
+      }
+
+      // The maximum possible product for this cell
+      dp[i][j][0] = Math.max(...vals);
+
+      // The minimum possible product for this cell
+      dp[i][j][1] = Math.min(...vals);
+    }
+  }
+
+  // Final answer is the max product at bottom-right
+  const best = dp[m - 1][n - 1][0];
+
+  // If it's negative, no valid non-negative product path exists
+  return best < 0 ? -1 : best % MOD;
+};
+
+
